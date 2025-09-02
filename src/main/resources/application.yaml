@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: iam_route
+              uri: ${IAM_ROUTE_URI:http://localhost:8081}
+              predicates:
+                - Path=/authentication/**
+              filters:
+                - PrefixPath=/api/v1
+            - id: challenges_route
+              uri: ${CHALLENGES_ROUTE_URI:http://localhost:8082}
+              predicates:
+                - Path=/challenges/**
+              filters:
+                - PrefixPath=/api/v1
