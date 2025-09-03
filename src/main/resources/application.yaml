@@ -7,7 +7,7 @@ spring:
             - id: iam_route
               uri: ${IAM_ROUTE_URI:http://localhost:8081}
               predicates:
-                - Path=/authentication/**
+                - Path=/authentication/**,/users/**
               filters:
                 - PrefixPath=/api/v1
             - id: challenges_route
