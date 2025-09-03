@@ -13,6 +13,6 @@ spring:
             - id: challenges_route
               uri: ${CHALLENGES_ROUTE_URI:http://localhost:8082}
               predicates:
-                - Path=/challenges/**
+                - Path=/challenges/**,/solutions/**,/tests/**
               filters:
                 - PrefixPath=/api/v1
