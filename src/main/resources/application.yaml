@@ -1,51 +1,18 @@
-  spring:
-    cloud:
-      gateway:
-        routes:
-          # Rutas de autenticación tradicional
-          - id: iam_authentication_route
-            uri: ${IAM_ROUTE_URI:http://localhost:8081}
-            predicates:
-              - Path=/api/v1/authentication/**
-            filters:
-              - StripPrefix=0
-
-          # Rutas OAuth2 para autorización
-          - id: iam_oauth2_route
-            uri: ${IAM_ROUTE_URI:http://localhost:8081}
-            predicates:
-              - Path=/oauth2/**
-            filters:
-              - StripPrefix=0
-
-          # Rutas para callbacks OAuth2 
-          - id: iam_oauth2_callback_route
-            uri: ${IAM_ROUTE_URI:http://localhost:8081}
-            predicates:
-              - Path=/login/oauth2/**
-            filters:
-              - StripPrefix=0
-
-          # RUTAS: Para manejar callbacks que vienen con prefijo /authentication/login
-          - id: iam_oauth2_callback_with_auth_prefix
-            uri: ${IAM_ROUTE_URI:http://localhost:8081}
-            predicates:
-              - Path=/authentication/login/oauth2/**
-            filters:
-              - RewritePath=/authentication/(?<segment>.*), /$\{segment}
-
-          # NUEVA RUTA: Para manejar /authentication/oauth2/callback (TU ERROR ACTUAL)
-          - id: iam_oauth2_callback_custom
-            uri: ${IAM_ROUTE_URI:http://localhost:8081}
-            predicates:
-              - Path=/authentication/oauth2/**
-            filters:
-              - RewritePath=/authentication/(?<segment>.*), /api/v1/authentication/$\{segment}
-
-          # Rutas de challenges
-          - id: challenges_route
-            uri: ${CHALLENGES_ROUTE_URI:http://localhost:8082}
-            predicates:
-              - Path=/api/v1/challenges/**
-            filters:
-              - StripPrefix=0
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: iam_route
+              uri: ${IAM_ROUTE_URI:http://localhost:8081}
+              predicates:
+                - Path=/authentication/**,/users/**
+              filters:
+                - PrefixPath=/api/v1
+            - id: challenges_route
+              uri: ${CHALLENGES_ROUTE_URI:http://localhost:8082}
+              predicates:
+                - Path=/challenges/**,/solutions/**,/tests/**
+              filters:
+                - PrefixPath=/api/v1
